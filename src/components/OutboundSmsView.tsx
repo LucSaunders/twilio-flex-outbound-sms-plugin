@@ -5,7 +5,6 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 const url = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL;
-// const url: string = `https://flex-outbound-4316-dev.twil.io`;
 
 const SmsCanvas = styled("div")`
   width: 300px;
