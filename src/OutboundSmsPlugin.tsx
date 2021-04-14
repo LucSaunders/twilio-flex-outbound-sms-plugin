@@ -4,6 +4,7 @@ import { FlexPlugin } from 'flex-plugin';
 import reducers, { namespace } from './states';
 import { OutboundSmsView } from './components/OutboundSmsView';
 
+const url = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL;
 const PLUGIN_NAME = 'OutboundSmsPlugin';
 
 export default class OutboundSmsPlugin extends FlexPlugin {
@@ -18,8 +19,10 @@ export default class OutboundSmsPlugin extends FlexPlugin {
    * @param flex { typeof Flex }
    * @param manager { Flex.Manager }
    */
+
    init(flex: typeof Flex, manager: Flex.Manager) {
     this.registerReducers(manager);
+    
     flex.SideNav.Content.add(
       <Flex.SideLink 
         showLabel={true}
@@ -29,18 +32,35 @@ export default class OutboundSmsPlugin extends FlexPlugin {
         key="OutboundSMSPageLink"
         >Outbound SMS</Flex.SideLink>
     )
+
     flex.ViewCollection.Content.add(
       <Flex.View name="outbound-sms-page" key="outbound-sms-page-key">
         <OutboundSmsView></OutboundSmsView>        
       </Flex.View>
     )
-  }
+
+    flex.Actions.addListener("afterWrapupTask", (payload) => {
+      // Only alter chat tasks:
+      console.log("wrap-up task")
+      console.log(payload.task)
+      if (payload.task.taskChannelUniqueName === "chat" || payload.task.taskChannelUniqueName === "sms") {
+        return fetch(`${url}/close-proxy-session`, {   
+                    headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    method: 'POST',
+                    body: `chatChannelSid=${payload.task.attributes.channelSid}`
+                  })
+        }
+      })
+    }
 
   /**
    * Registers the plugin reducers
    *
    * @param manager { Flex.Manager }
    */
+
   private registerReducers(manager: Flex.Manager) {
     if (!manager.store.addReducer) {
       // tslint: disable-next-line
