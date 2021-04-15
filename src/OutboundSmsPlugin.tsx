@@ -3,7 +3,7 @@ import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 import reducers, { namespace } from './states';
 import { OutboundSmsView } from './components/OutboundSmsView';
-
+const outboundSmsWorkflowSid = process.env.OUTBOUND_SMS_WORKFLOW_SID;
 const url = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL;
 const PLUGIN_NAME = 'OutboundSmsPlugin';
 
@@ -19,10 +19,9 @@ export default class OutboundSmsPlugin extends FlexPlugin {
    * @param flex { typeof Flex }
    * @param manager { Flex.Manager }
    */
-
    init(flex: typeof Flex, manager: Flex.Manager) {
     this.registerReducers(manager);
-    
+
     flex.SideNav.Content.add(
       <Flex.SideLink 
         showLabel={true}
@@ -43,7 +42,7 @@ export default class OutboundSmsPlugin extends FlexPlugin {
       // Only alter chat tasks:
       console.log("wrap-up task")
       console.log(payload.task)
-      if (payload.task.taskChannelUniqueName === "chat" || payload.task.taskChannelUniqueName === "sms") {
+      if (payload.task.workflowSid === outboundSmsWorkflowSid && (payload.task.taskChannelUniqueName === "chat" || payload.task.taskChannelUniqueName === "sms")) {
         return fetch(`${url}/close-proxy-session`, {   
                     headers: {
                       'Content-Type': 'application/x-www-form-urlencoded'
@@ -60,7 +59,6 @@ export default class OutboundSmsPlugin extends FlexPlugin {
    *
    * @param manager { Flex.Manager }
    */
-
   private registerReducers(manager: Flex.Manager) {
     if (!manager.store.addReducer) {
       // tslint: disable-next-line

@@ -32,7 +32,7 @@ export class OutboundSmsView extends React.Component {
     const message = encodeURIComponent(this.state.Message);
 
     if (to.length > 0 && from.length > 0) {
-      fetch(`${url}/send-sms`, {   
+      fetch(`${url}/send-sms`, {  
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
