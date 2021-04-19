@@ -3,8 +3,9 @@ import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 import reducers, { namespace } from './states';
 import { OutboundSmsView } from './components/OutboundSmsView';
-const outboundSmsWorkflowSid = process.env.OUTBOUND_SMS_WORKFLOW_SID;
 const url = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL;
+const outboundSmsWorkflowSid = process.env.OUTBOUND_SMS_WORKFLOW_SID;
+const outbound_sms_permissions = process.env.OUTBOUND_SMS_PERMISSIONS;
 const PLUGIN_NAME = 'OutboundSmsPlugin';
 
 export default class OutboundSmsPlugin extends FlexPlugin {
@@ -21,6 +22,7 @@ export default class OutboundSmsPlugin extends FlexPlugin {
    */
    init(flex: typeof Flex, manager: Flex.Manager) {
     this.registerReducers(manager);
+    const skills = manager.store.getState().flex.worker.attributes.routing.skills;
 
     flex.SideNav.Content.add(
       <Flex.SideLink 
@@ -29,18 +31,24 @@ export default class OutboundSmsPlugin extends FlexPlugin {
         isActive={true}
         onClick={() => {flex.Actions.invokeAction("HistoryPush", "/outbound-sms-page")}}
         key="OutboundSMSPageLink"
-        >Outbound SMS</Flex.SideLink>
+        >Outbound SMS</Flex.SideLink>, {
+          if: () => 
+            skills.includes(outbound_sms_permissions) 
+        }
     )
 
     flex.ViewCollection.Content.add(
       <Flex.View name="outbound-sms-page" key="outbound-sms-page-key">
         <OutboundSmsView></OutboundSmsView>        
-      </Flex.View>
+      </Flex.View>, {
+          if: () => 
+            skills.includes(outbound_sms_permissions) 
+        }
     )
 
     flex.Actions.addListener("afterWrapupTask", (payload) => {
       // Only alter chat tasks:
-      console.log("wrap-up task")
+      console.log("WRAP-UP TASK")
       console.log(payload.task)
       if (payload.task.workflowSid === outboundSmsWorkflowSid && (payload.task.taskChannelUniqueName === "chat" || payload.task.taskChannelUniqueName === "sms")) {
         return fetch(`${url}/close-proxy-session`, {   
