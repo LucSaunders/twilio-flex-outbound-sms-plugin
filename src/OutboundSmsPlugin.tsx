@@ -6,6 +6,8 @@ import { OutboundSmsView } from './components/OutboundSmsView';
 const url = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL;
 const outboundSmsWorkflowSid = process.env.OUTBOUND_SMS_WORKFLOW_SID;
 const outbound_sms_permissions = process.env.OUTBOUND_SMS_PERMISSIONS;
+const ACCOUNT_SID = process.env.ACCOUNT_SID;
+const AUTH_TOKEN = process.env.AUTH_TOKEN;
 const PLUGIN_NAME = 'OutboundSmsPlugin';
 
 export default class OutboundSmsPlugin extends FlexPlugin {

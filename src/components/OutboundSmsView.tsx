@@ -26,24 +26,52 @@ export class OutboundSmsView extends React.Component {
     Message: ''
   }
 
+  // Validate phone number format and that it's all digits
+  // async isNumeric(str: string) {
+  //   try {
+  //     // Accept only entered phone numbers of minimum length 10 digits
+  //     if (typeof str != "string") return false; 
+  //     // Scrub "+" from number if present
+  //     if (str.charAt(0) === '+') {
+  //         console.log("Removing '+' from number");
+  //         let sanitizedNumber = str.substring(1);
+  //         console.log(sanitizedNumber);
+  //         const validity = !isNaN(parseInt(sanitizedNumber));
+  //         console.log(`number validation is ${validity}`);
+  //         return validity;
+  //     } else {
+  //       return !isNaN(parseInt(str));
+  //     }
+  //   } catch (error) {
+  //       console.log(error);  
+  //   }
+  // }
+
   async startSMS() {
     const to = encodeURIComponent(this.state.To);
     const from = encodeURIComponent(this.state.From);
     const message = encodeURIComponent(this.state.Message);
-
-    if (to.length > 0 && from.length > 0) {
-      fetch(`${url}/send-sms`, {  
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        method: 'POST',
-        body: `from=${from}&to=${to}&message=${message}`
-      })
-      .then(await Actions.invokeAction('NavigateToView', { viewName: 'agent-desktop' }));
-    } else {
-      console.log('Invalid number entered');
+    try {
+        // if (this.isNumeric(this.state.To) && this.isNumeric(this.state.From)) {
+        if ((this.state.To.length == 11) && (this.state.From.length == 11)) {
+          await fetch(`${url}/send-sms`, {  
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            method: 'POST',
+            body: `from=${from}&to=${to}&message=${message}`
+          })    
+          Actions.invokeAction('NavigateToView', { viewName: 'agent-desktop' });
+        } else {
+          console.log("number format validation didn't pass, and")
+          throw new Error;
+          
+        }
+      } catch (error) {
+        // TODO: trigger notification bar that sms didn't go through/not valid phone number
+        console.log(error);
+      }
     }
-  }
 
   handleChange = (name: any) => (event: any) => {
     this.setState({
