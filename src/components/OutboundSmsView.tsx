@@ -24,11 +24,11 @@ export class OutboundSmsView extends React.Component {
     Message: "",
   }
 
-  // Validate phone number format and that it's all digits
+  // Validate phone number is all digits
   async isNumeric(str: string) {
     try {
       // Accept only entered phone numbers of minimum length 10 digits
-      if (typeof str != "string") return false
+      if (typeof str != "string" || str.length < 10) return false
       // Scrub "+" from number if present, before confirming it's a number
       if (str.charAt(0) === "+") {
         console.log("Removing '+' from number")
@@ -45,13 +45,44 @@ export class OutboundSmsView extends React.Component {
     }
   }
 
+  // TODO: Verify via testing
+  // Ensure E.164 Format and encoding for phone number
+  // async formatNumber(number: string) {
+  //   try {
+  //     if (number.length === 10) {
+  //       console.log("Adding +1 to number")
+  //       // return `+1${number}`
+  //       number = `+1${number}`
+  //     }
+  //     if (number.charAt(0) !== "+") {
+  //       console.log("Adding + to number")
+  //       // return `+${number}`
+  //       number = `+${number}`
+  //     }
+  //     return encodeURIComponent(number)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
   async startSMS() {
     const to = encodeURIComponent(this.state.To)
     const from = encodeURIComponent(this.state.From)
     const message = encodeURIComponent(this.state.Message)
     try {
-      if (this.isNumeric(this.state.To) && this.isNumeric(this.state.From)) {
+      if (
+        this.state.To.length > 9 &&
+        this.isNumeric(this.state.To) &&
+        this.state.From.length > 9 &&
+        this.isNumeric(this.state.From)
+      ) {
+        // if (this.isNumeric(this.state.To) && this.isNumeric(this.state.From)) {
         // if ((this.state.To.length == 12) && (this.state.From.length == 12)) {
+
+        // const to = this.formatNumber(this.state.To)
+        // const from = this.formatNumber(this.state.To)
+        // const message = encodeURIComponent(this.state.Message)
+
         await fetch(`${url}/send-sms`, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -68,6 +99,7 @@ export class OutboundSmsView extends React.Component {
       }
     } catch (error) {
       // TODO: trigger notification bar that sms didn't go through/not valid phone number
+      // Flex.NotificationBar.arguments(error)
       console.log(error)
     }
   }
