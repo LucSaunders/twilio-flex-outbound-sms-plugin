@@ -64,6 +64,3 @@ typings/
 appConfig.js
 pluginsService.js
 build/
-
-# Dev workspace dependency
-.vscode

@@ -1,10 +1,9 @@
-import React from 'react';
-import { Actions } from '@twilio/flex-ui';
+import React from "react"
+import * as Flex from "@twilio/flex-ui"
 import styled from "react-emotion"
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-
-const url = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL;
+import TextField from "@material-ui/core/TextField"
+import Button from "@material-ui/core/Button"
+const url = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL
 
 const SmsCanvas = styled("div")`
   width: 300px;
@@ -19,65 +18,65 @@ const SmsInput = styled("div")`
 `
 
 export class OutboundSmsView extends React.Component {
-
   state = {
-    To: '',
-    From: '',
-    Message: ''
+    To: "",
+    From: "",
+    Message: "",
   }
 
   // Validate phone number format and that it's all digits
-  // async isNumeric(str: string) {
-  //   try {
-  //     // Accept only entered phone numbers of minimum length 10 digits
-  //     if (typeof str != "string") return false; 
-  //     // Scrub "+" from number if present
-  //     if (str.charAt(0) === '+') {
-  //         console.log("Removing '+' from number");
-  //         let sanitizedNumber = str.substring(1);
-  //         console.log(sanitizedNumber);
-  //         const validity = !isNaN(parseInt(sanitizedNumber));
-  //         console.log(`number validation is ${validity}`);
-  //         return validity;
-  //     } else {
-  //       return !isNaN(parseInt(str));
-  //     }
-  //   } catch (error) {
-  //       console.log(error);  
-  //   }
-  // }
+  async isNumeric(str: string) {
+    try {
+      // Accept only entered phone numbers of minimum length 10 digits
+      if (typeof str != "string") return false
+      // Scrub "+" from number if present, before confirming it's a number
+      if (str.charAt(0) === "+") {
+        console.log("Removing '+' from number")
+        let sanitizedNumber = str.substring(1)
+        console.log(sanitizedNumber)
+        const validity = !isNaN(parseInt(sanitizedNumber))
+        console.log(`number validation is ${validity}`)
+        return validity
+      } else {
+        return !isNaN(parseInt(str))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   async startSMS() {
-    const to = encodeURIComponent(this.state.To);
-    const from = encodeURIComponent(this.state.From);
-    const message = encodeURIComponent(this.state.Message);
+    const to = encodeURIComponent(this.state.To)
+    const from = encodeURIComponent(this.state.From)
+    const message = encodeURIComponent(this.state.Message)
     try {
-        // if (this.isNumeric(this.state.To) && this.isNumeric(this.state.From)) {
-        if ((this.state.To.length == 11) && (this.state.From.length == 11)) {
-          await fetch(`${url}/send-sms`, {  
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            method: 'POST',
-            body: `from=${from}&to=${to}&message=${message}`
-          })    
-          Actions.invokeAction('NavigateToView', { viewName: 'agent-desktop' });
-        } else {
-          console.log("number format validation didn't pass, and")
-          throw new Error;
-          
-        }
-      } catch (error) {
-        // TODO: trigger notification bar that sms didn't go through/not valid phone number
-        console.log(error);
+      if (this.isNumeric(this.state.To) && this.isNumeric(this.state.From)) {
+        // if ((this.state.To.length == 12) && (this.state.From.length == 12)) {
+        await fetch(`${url}/send-sms`, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          method: "POST",
+          body: `from=${from}&to=${to}&message=${message}`,
+        })
+        Flex.Actions.invokeAction("NavigateToView", {
+          viewName: "agent-desktop",
+        })
+      } else {
+        console.log("number format validation didn't pass, and")
+        throw new Error()
       }
+    } catch (error) {
+      // TODO: trigger notification bar that sms didn't go through/not valid phone number
+      console.log(error)
     }
+  }
 
   handleChange = (name: any) => (event: any) => {
     this.setState({
       [name]: event.target.value,
-    });
-  };
+    })
+  }
 
   render() {
     return (
@@ -85,41 +84,47 @@ export class OutboundSmsView extends React.Component {
         <div>
           <SmsInput>
             <TextField
-              id='To'
-              label='To'
+              id="To"
+              label="To"
               value={this.state.To}
-              onChange={this.handleChange('To')}
-              margin='normal'
-              variant='outlined'
+              onChange={this.handleChange("To")}
+              margin="normal"
+              variant="outlined"
             />
           </SmsInput>
           <SmsInput>
             <TextField
-              id='From'
-              label='From'
+              id="From"
+              label="From"
               value={this.state.From}
-              onChange={this.handleChange('From')}
-              margin='normal'
-              variant='outlined'
+              onChange={this.handleChange("From")}
+              margin="normal"
+              variant="outlined"
             />
           </SmsInput>
           <SmsInput>
             <TextField
-              id='Message'
-              label='Message'
+              id="Message"
+              label="Message"
               multiline
-              rows='4'
+              rows="4"
               value={this.state.Message}
-              onChange={this.handleChange('Message')}
-              margin='normal'
-              variant='outlined'
+              onChange={this.handleChange("Message")}
+              margin="normal"
+              variant="outlined"
             />
           </SmsInput>
         </div>
-        <Button variant='contained' color='primary' onClick={e => this.startSMS()}>Submit</Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={(e) => this.startSMS()}
+        >
+          Submit
+        </Button>
       </SmsCanvas>
     )
   }
 }
 
-export default OutboundSmsView;
+export default OutboundSmsView

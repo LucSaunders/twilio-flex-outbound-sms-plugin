@@ -4,5 +4,5 @@ module.exports = (config, { isProd, isDev, isTest }) => {
    * Consult https://jestjs.io/docs/en/configuration for more information.
    */
 
-  return config;
+  return config
 }
