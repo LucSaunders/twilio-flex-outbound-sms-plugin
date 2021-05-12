@@ -1,5 +1,4 @@
 import * as React from "react"
-
 import { SideLink, Actions } from "@twilio/flex-ui"
 
 export default class OutboundSmsButton extends SideLink {

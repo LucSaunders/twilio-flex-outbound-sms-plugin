@@ -3,7 +3,14 @@ import * as Flex from "@twilio/flex-ui"
 import styled from "react-emotion"
 import TextField from "@material-ui/core/TextField"
 import Button from "@material-ui/core/Button"
-const url = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL
+import { FlexContext } from "@twilio/flex-ui"
+const URL = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL
+
+// const workerContactUri = Flex.Manager.store.getState().flex.worker.attributes
+//   .contact_uri
+
+// const workerContactUri = Flex.Manager.getInstance().workerClient.attributes
+//   .contact_uri
 
 const SmsCanvas = styled("div")`
   width: 300px;
@@ -22,6 +29,7 @@ export class OutboundSmsView extends React.Component {
     To: "",
     From: "",
     Message: "",
+    Error: null,
   }
 
   // Validate phone number is all digits
@@ -83,7 +91,7 @@ export class OutboundSmsView extends React.Component {
         // const from = this.formatNumber(this.state.To)
         // const message = encodeURIComponent(this.state.Message)
 
-        await fetch(`${url}/send-sms`, {
+        await fetch(`${URL}/send-sms`, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
@@ -99,7 +107,9 @@ export class OutboundSmsView extends React.Component {
       }
     } catch (error) {
       // TODO: trigger notification bar that sms didn't go through/not valid phone number
-      // Flex.NotificationBar.arguments(error)
+      // Flex.Notifications.showNotification("my_notification", {
+      //   message: "Your sms message did not go through",
+      // })
       console.log(error)
     }
   }

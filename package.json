@@ -1,13 +1,13 @@
 {
   "name": "plugin-outbound-sms",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "private": true,
   "scripts": {
     "postinstall": "flex-plugin pre-script-check"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
-    "flex-plugin-scripts": "^4.5.0-beta.0",
+    "flex-plugin-scripts": "4.7.7-beta.0",
     "react": "16.5.2",
     "react-dom": "16.5.2"
   },

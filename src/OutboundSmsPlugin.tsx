@@ -3,12 +3,11 @@ import * as Flex from "@twilio/flex-ui"
 import { FlexPlugin } from "flex-plugin"
 import reducers, { namespace } from "./states"
 import { OutboundSmsView } from "./components/OutboundSmsView"
-const url = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL
-const outboundSmsWorkflowSid = process.env.OUTBOUND_SMS_WORKFLOW_SID
-const outbound_sms_permissions = process.env.OUTBOUND_SMS_PERMISSIONS
-const ACCOUNT_SID = process.env.ACCOUNT_SID
-const AUTH_TOKEN = process.env.AUTH_TOKEN
+const URL = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL
+const OUTBOUND_SMS_WORKFLOW_SID = process.env.FLEX_OUTBOUND_SMS_WORKFLOW_SID
+const OUTBOUND_SMS_PERMISSIONS = process.env.FLEX_OUTBOUND_SMS_PERMISSIONS
 const PLUGIN_NAME = "OutboundSmsPlugin"
+const ACCOUNT_SID = process.env.ACCOUNT_SID
 
 export default class OutboundSmsPlugin extends FlexPlugin {
   constructor() {
@@ -24,8 +23,13 @@ export default class OutboundSmsPlugin extends FlexPlugin {
    */
   init(flex: typeof Flex, manager: Flex.Manager) {
     this.registerReducers(manager)
+    console.log(process.env)
     const skills = manager.store.getState().flex.worker.attributes.routing
       .skills
+    console.log("%%%%%%%%%%%%%%%")
+    console.log("skills.includes(OUTBOUND_SMS_PERMISSIONS):")
+    console.log(skills.includes(OUTBOUND_SMS_PERMISSIONS))
+    console.log("%%%%%%%%%%%%%%%")
 
     flex.SideNav.Content.add(
       <Flex.SideLink
@@ -40,7 +44,7 @@ export default class OutboundSmsPlugin extends FlexPlugin {
         Outbound SMS
       </Flex.SideLink>,
       {
-        if: () => skills.includes(outbound_sms_permissions),
+        if: () => skills.includes(OUTBOUND_SMS_PERMISSIONS),
       },
     )
 
@@ -49,7 +53,7 @@ export default class OutboundSmsPlugin extends FlexPlugin {
         <OutboundSmsView></OutboundSmsView>
       </Flex.View>,
       {
-        if: () => skills.includes(outbound_sms_permissions),
+        if: () => skills.includes(OUTBOUND_SMS_PERMISSIONS),
       },
     )
 
@@ -58,11 +62,11 @@ export default class OutboundSmsPlugin extends FlexPlugin {
       console.log("WRAP-UP TASK")
       console.log(payload.task)
       if (
-        payload.task.workflowSid === outboundSmsWorkflowSid &&
+        payload.task.workflowSid === OUTBOUND_SMS_WORKFLOW_SID &&
         (payload.task.taskChannelUniqueName === "chat" ||
           payload.task.taskChannelUniqueName === "sms")
       ) {
-        return fetch(`${url}/close-proxy-session`, {
+        return fetch(`${URL}/close-proxy-session`, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
