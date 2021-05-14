@@ -6,12 +6,6 @@ import Button from "@material-ui/core/Button"
 import { FlexContext } from "@twilio/flex-ui"
 const URL = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL
 
-// const workerContactUri = Flex.Manager.store.getState().flex.worker.attributes
-//   .contact_uri
-
-// const workerContactUri = Flex.Manager.getInstance().workerClient.attributes
-//   .contact_uri
-
 const SmsCanvas = styled("div")`
   width: 300px;
   margin-left: 50px;
@@ -32,6 +26,7 @@ export class OutboundSmsView extends React.Component {
     Error: null,
   }
 
+  // ERROR-HANDLING:
   // Validate phone number is all digits
   async isNumeric(str: string) {
     try {
@@ -84,12 +79,9 @@ export class OutboundSmsView extends React.Component {
         this.state.From.length > 9 &&
         this.isNumeric(this.state.From)
       ) {
+        // TODO: For formatNumber() above
         // if (this.isNumeric(this.state.To) && this.isNumeric(this.state.From)) {
         // if ((this.state.To.length == 12) && (this.state.From.length == 12)) {
-
-        // const to = this.formatNumber(this.state.To)
-        // const from = this.formatNumber(this.state.To)
-        // const message = encodeURIComponent(this.state.Message)
 
         await fetch(`${URL}/send-sms`, {
           headers: {

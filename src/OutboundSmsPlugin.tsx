@@ -90,7 +90,6 @@ export default class OutboundSmsPlugin extends FlexPlugin {
       )
       return
     }
-
     manager.store.addReducer(namespace, reducers)
   }
 }
