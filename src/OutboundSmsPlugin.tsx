@@ -3,11 +3,11 @@ import * as Flex from "@twilio/flex-ui"
 import { FlexPlugin } from "flex-plugin"
 import reducers, { namespace } from "./states"
 import { OutboundSmsView } from "./components/OutboundSmsView"
-const URL = process.env.FLEX_OUTBOUND_SERVICE_BASE_URL
-const OUTBOUND_SMS_WORKFLOW_SID = process.env.FLEX_OUTBOUND_SMS_WORKFLOW_SID
-const OUTBOUND_SMS_PERMISSIONS = process.env.FLEX_OUTBOUND_SMS_PERMISSIONS
+const URL = process.env.FLEX_APP_OUTBOUND_SERVICE_BASE_URL
+const OUTBOUND_SMS_WORKFLOW_SID = process.env.FLEX_APP_OUTBOUND_SMS_WORKFLOW_SID
+const OUTBOUND_SMS_PERMISSIONS = process.env.FLEX_APP_OUTBOUND_SMS_PERMISSIONS
 const PLUGIN_NAME = "OutboundSmsPlugin"
-const ACCOUNT_SID = process.env.ACCOUNT_SID
+const ACCOUNT_SID = process.env.FLEX_APP_ACCOUNT_SID
 
 export default class OutboundSmsPlugin extends FlexPlugin {
   constructor() {
